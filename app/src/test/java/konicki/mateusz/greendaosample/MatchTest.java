@@ -164,22 +164,11 @@ public class MatchTest extends BaseTest {
     public void matchRemoveWhenActive() {
         DaoSession session = master.newSession();
 
-        final int blueGoals = 4;
-
-        Team teamA = new Team();
-        Team teamB = new Team();
-
-        session.insert(teamA);
-        session.insert(teamB);
-
-        Match match = new Match(MatchType.OneVsOne, teamA, teamB);
+        Match match = new Match(MatchType.OneVsOne);
 
         assertThat(session.insert(match)).isNotNull();
 
-        for (int i = 0; i < blueGoals; i++)
-            match.blueGoals++;
-
-        //ACTIVE UPDATE
+        //ACTIVE DELETE
         match.delete();
 
         session.clear();
