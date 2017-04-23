@@ -61,6 +61,12 @@ public class Match {
         this.matchType = matchType;
     }
 
+    public Match(MatchType matchType, int redGoals, int blueGoals) {
+        this.matchType = matchType;
+        this.redGoals = redGoals;
+        this.blueGoals = blueGoals;
+    }
+
     @Generated(hash = 1834681287)
     public Match() {
     }
