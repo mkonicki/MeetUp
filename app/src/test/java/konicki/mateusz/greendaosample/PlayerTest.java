@@ -3,6 +3,7 @@ package konicki.mateusz.greendaosample;
 import android.content.Context;
 import android.os.Build;
 
+import org.greenrobot.greendao.query.QueryBuilder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
@@ -43,4 +44,74 @@ public class PlayerTest extends BaseTest {
         assertThat(players).containsOnlyOnce(player);
 
     }
+
+
+    @Test
+    public void findPlayerByName() {
+
+        DaoSession session = master.newSession();
+
+        String playerName = "Kaczka";
+        Player player = new Player(playerName);
+        Player secondPlayer = new Player("Kurczak");
+        Player thirdPlayer = new Player("Joey");
+        Player fourthPlayer = new Player("Chandler");
+
+        PlayerDao playerDao = session.getPlayerDao();
+
+        //SEED DATA
+        playerDao.insert(player);
+        playerDao.insert(secondPlayer);
+        playerDao.insert(thirdPlayer);
+        playerDao.insert(fourthPlayer);
+
+
+        QueryBuilder queryBuilder = playerDao.queryBuilder()
+                .where(PlayerDao.Properties.Nickname.like(playerName));
+
+        assertThat(queryBuilder.count()).isEqualTo(1);
+
+        assertThat(queryBuilder.list()).containsOnly(player);
+
+    }
+
+
+    @Test
+    public void findPlayerByNameWithSeeder() {
+
+        DaoSession session = master.newSession();
+
+        String playerName = "Kaczka";
+        Player player = new Player(playerName);
+
+
+        PlayerDao playerDao = session.getPlayerDao();
+
+        //SEED DATA
+        playerDao.insert(player);
+
+        seedData(session);
+
+        QueryBuilder queryBuilder = playerDao.queryBuilder()
+                .where(PlayerDao.Properties.Nickname.like(playerName));
+
+        assertThat(queryBuilder.count()).isEqualTo(1);
+
+        assertThat(queryBuilder.list()).containsOnly(player);
+
+    }
+
+
+    private void seedData(DaoSession session){
+        PlayerDao playerDao = session.getPlayerDao();
+
+        Player secondPlayer = new Player("Kurczak");
+        Player thirdPlayer = new Player("Joey");
+        Player fourthPlayer = new Player("Chandler");
+
+        playerDao.insert(secondPlayer);
+        playerDao.insert(thirdPlayer);
+        playerDao.insert(fourthPlayer);
+    }
+
 }
