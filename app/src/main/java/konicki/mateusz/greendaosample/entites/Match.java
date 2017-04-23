@@ -3,19 +3,17 @@ package konicki.mateusz.greendaosample.entites;
 import org.greenrobot.greendao.annotation.Convert;
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
-import org.greenrobot.greendao.annotation.JoinEntity;
-import org.greenrobot.greendao.annotation.ToMany;
-import org.greenrobot.greendao.annotation.ToOne;
 
 import java.util.Date;
-import java.util.List;
+
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.DaoException;
+import org.greenrobot.greendao.annotation.ToOne;
 
 /**
  * Created by Mateusz on 17.04.2017.
  */
-@Entity
+@Entity(active = true)
 public class Match {
     @Id(autoincrement = true)
     private Long id;
@@ -24,39 +22,68 @@ public class Match {
 
     private Date end;
 
-    @ToMany
-    @JoinEntity(
-            entity = TeamMatch.class,
-            targetProperty = "teamId",
-            sourceProperty = "matchId"
-    )
-    private List<Team> teams;
+    private int redGoals;
 
+    private int blueGoals;
 
-    @ToMany(referencedJoinProperty = "matchId")
-    private List<Goal> goals;
+    private Long redTeamId;
+
+    private Long blueTeamId;
+
+    @ToOne(joinProperty = "redTeamId")
+    private Team redTeam;
+
+    @ToOne(joinProperty = "blueTeamId")
+    private Team blueTeam;
 
     @Convert(converter = MatchTypeConverter.class, columnType = Integer.class)
     private MatchType matchType;
 
-    /** Used to resolve relations */
+    /**
+     * Used to resolve relations
+     */
     @Generated(hash = 2040040024)
     private transient DaoSession daoSession;
 
-    /** Used for active entity operations. */
+    /**
+     * Used for active entity operations.
+     */
     @Generated(hash = 522467795)
     private transient MatchDao myDao;
 
-    @Generated(hash = 1284434006)
-    public Match(Long id, Date begin, Date end, MatchType matchType) {
-        this.id = id;
-        this.begin = begin;
-        this.end = end;
+    @Generated(hash = 476078068)
+    private transient Long redTeam__resolvedKey;
+
+    @Generated(hash = 944270540)
+    private transient Long blueTeam__resolvedKey;
+
+    public Match(MatchType matchType) {
         this.matchType = matchType;
     }
 
     @Generated(hash = 1834681287)
     public Match() {
+    }
+
+    @Generated(hash = 156466388)
+    public Match(Long id, Date begin, Date end, int redGoals, int blueGoals, Long redTeamId,
+                 Long blueTeamId, MatchType matchType) {
+        this.id = id;
+        this.begin = begin;
+        this.end = end;
+        this.redGoals = redGoals;
+        this.blueGoals = blueGoals;
+        this.redTeamId = redTeamId;
+        this.blueTeamId = blueTeamId;
+        this.matchType = matchType;
+    }
+
+    public Match(MatchType matchType, Team blueTeam, Team redTeam) {
+        this.matchType = matchType;
+        this.blueTeamId = blueTeam.getId();
+        this.redTeamId = redTeam.getId();
+        this.redGoals = 0;
+        this.blueGoals = 0;
     }
 
     public Long getId() {
@@ -89,62 +116,6 @@ public class Match {
 
     public void setMatchType(MatchType matchType) {
         this.matchType = matchType;
-    }
-
-    /**
-     * To-many relationship, resolved on first access (and after reset).
-     * Changes to to-many relations are not persisted, make changes to the target entity.
-     */
-    @Generated(hash = 1090154)
-    public List<Team> getTeams() {
-        if (teams == null) {
-            final DaoSession daoSession = this.daoSession;
-            if (daoSession == null) {
-                throw new DaoException("Entity is detached from DAO context");
-            }
-            TeamDao targetDao = daoSession.getTeamDao();
-            List<Team> teamsNew = targetDao._queryMatch_Teams(id);
-            synchronized (this) {
-                if (teams == null) {
-                    teams = teamsNew;
-                }
-            }
-        }
-        return teams;
-    }
-
-    /** Resets a to-many relationship, making the next get call to query for a fresh result. */
-    @Generated(hash = 755494824)
-    public synchronized void resetTeams() {
-        teams = null;
-    }
-
-    /**
-     * To-many relationship, resolved on first access (and after reset).
-     * Changes to to-many relations are not persisted, make changes to the target entity.
-     */
-    @Generated(hash = 1433953387)
-    public List<Goal> getGoals() {
-        if (goals == null) {
-            final DaoSession daoSession = this.daoSession;
-            if (daoSession == null) {
-                throw new DaoException("Entity is detached from DAO context");
-            }
-            GoalDao targetDao = daoSession.getGoalDao();
-            List<Goal> goalsNew = targetDao._queryMatch_Goals(id);
-            synchronized (this) {
-                if (goals == null) {
-                    goals = goalsNew;
-                }
-            }
-        }
-        return goals;
-    }
-
-    /** Resets a to-many relationship, making the next get call to query for a fresh result. */
-    @Generated(hash = 1654856844)
-    public synchronized void resetGoals() {
-        goals = null;
     }
 
     /**
@@ -183,11 +154,117 @@ public class Match {
         myDao.update(this);
     }
 
+
+    public int getRedGoals() {
+        return this.redGoals;
+    }
+
+    public void setRedGoals(int redGoals) {
+        this.redGoals = redGoals;
+    }
+
+    public int getBlueGoals() {
+        return this.blueGoals;
+    }
+
+    public void setBlueGoals(int blueGoals) {
+        this.blueGoals = blueGoals;
+    }
+
+    public Long getRedTeamId() {
+        return this.redTeamId;
+    }
+
+    public void setRedTeamId(Long redTeamId) {
+        this.redTeamId = redTeamId;
+    }
+
+    public Long getBlueTeamId() {
+        return this.blueTeamId;
+    }
+
+    public void setBlueTeamId(Long blueTeamId) {
+        this.blueTeamId = blueTeamId;
+    }
+
+    /**
+     * To-one relationship, resolved on first access.
+     */
+    @Generated(hash = 1765015403)
+    public Team getRedTeam() {
+        Long __key = this.redTeamId;
+        if (redTeam__resolvedKey == null || !redTeam__resolvedKey.equals(__key)) {
+            final DaoSession daoSession = this.daoSession;
+            if (daoSession == null) {
+                throw new DaoException("Entity is detached from DAO context");
+            }
+            TeamDao targetDao = daoSession.getTeamDao();
+            Team redTeamNew = targetDao.load(__key);
+            synchronized (this) {
+                redTeam = redTeamNew;
+                redTeam__resolvedKey = __key;
+            }
+        }
+        return redTeam;
+    }
+
+    /**
+     * called by internal mechanisms, do not call yourself.
+     */
+    @Generated(hash = 1353001501)
+    public void setRedTeam(Team redTeam) {
+        synchronized (this) {
+            this.redTeam = redTeam;
+            redTeamId = redTeam == null ? null : redTeam.getId();
+            redTeam__resolvedKey = redTeamId;
+        }
+    }
+
+    /**
+     * To-one relationship, resolved on first access.
+     */
+    @Generated(hash = 1052516433)
+    public Team getBlueTeam() {
+        Long __key = this.blueTeamId;
+        if (blueTeam__resolvedKey == null || !blueTeam__resolvedKey.equals(__key)) {
+            final DaoSession daoSession = this.daoSession;
+            if (daoSession == null) {
+                throw new DaoException("Entity is detached from DAO context");
+            }
+            TeamDao targetDao = daoSession.getTeamDao();
+            Team blueTeamNew = targetDao.load(__key);
+            synchronized (this) {
+                blueTeam = blueTeamNew;
+                blueTeam__resolvedKey = __key;
+            }
+        }
+        return blueTeam;
+    }
+
+    /**
+     * called by internal mechanisms, do not call yourself.
+     */
+    @Generated(hash = 247157287)
+    public void setBlueTeam(Team blueTeam) {
+        synchronized (this) {
+            this.blueTeam = blueTeam;
+            blueTeamId = blueTeam == null ? null : blueTeam.getId();
+            blueTeam__resolvedKey = blueTeamId;
+        }
+    }
+
+    public void redTeamGoal() {
+        redGoals++;
+    }
+
+    public void blueTeamGoal() {
+        blueGoals++;
+    }
+
     /** called by internal mechanisms, do not call yourself. */
     @Generated(hash = 88911878)
     public void __setDaoSession(DaoSession daoSession) {
         this.daoSession = daoSession;
         myDao = daoSession != null ? daoSession.getMatchDao() : null;
     }
-
 }

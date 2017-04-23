@@ -27,14 +27,12 @@ public class Team {
     )
     private List<Player> players;
 
-    @ToMany
-    @JoinEntity(
-            entity = TeamMatch.class,
-            sourceProperty = "teamId",
-            targetProperty = "matchId"
-    )
-    private List<Match> matches;
+    @ToMany(referencedJoinProperty = "redTeamId")
+    private List<Match> matchesAsRedTeam;
 
+
+    @ToMany(referencedJoinProperty = "blueTeamId")
+    private List<Match> matchesAsBlueTeam;
     /**
      * Used to resolve relations
      */
@@ -66,36 +64,6 @@ public class Team {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    /**
-     * To-many relationship, resolved on first access (and after reset).
-     * Changes to to-many relations are not persisted, make changes to the target entity.
-     */
-    @Generated(hash = 2039288919)
-    public List<Match> getMatches() {
-        if (matches == null) {
-            final DaoSession daoSession = this.daoSession;
-            if (daoSession == null) {
-                throw new DaoException("Entity is detached from DAO context");
-            }
-            MatchDao targetDao = daoSession.getMatchDao();
-            List<Match> matchesNew = targetDao._queryTeam_Matches(id);
-            synchronized (this) {
-                if (matches == null) {
-                    matches = matchesNew;
-                }
-            }
-        }
-        return matches;
-    }
-
-    /**
-     * Resets a to-many relationship, making the next get call to query for a fresh result.
-     */
-    @Generated(hash = 892778351)
-    public synchronized void resetMatches() {
-        matches = null;
     }
 
     /**
@@ -156,10 +124,68 @@ public class Team {
         return players;
     }
 
-    /** Resets a to-many relationship, making the next get call to query for a fresh result. */
+    /**
+     * Resets a to-many relationship, making the next get call to query for a fresh result.
+     */
     @Generated(hash = 1686450619)
     public synchronized void resetPlayers() {
         players = null;
+    }
+
+    /**
+     * To-many relationship, resolved on first access (and after reset).
+     * Changes to to-many relations are not persisted, make changes to the target entity.
+     */
+    @Generated(hash = 1408610079)
+    public List<Match> getMatchesAsRedTeam() {
+        if (matchesAsRedTeam == null) {
+            final DaoSession daoSession = this.daoSession;
+            if (daoSession == null) {
+                throw new DaoException("Entity is detached from DAO context");
+            }
+            MatchDao targetDao = daoSession.getMatchDao();
+            List<Match> matchesAsRedTeamNew = targetDao._queryTeam_MatchesAsRedTeam(id);
+            synchronized (this) {
+                if (matchesAsRedTeam == null) {
+                    matchesAsRedTeam = matchesAsRedTeamNew;
+                }
+            }
+        }
+        return matchesAsRedTeam;
+    }
+
+    /** Resets a to-many relationship, making the next get call to query for a fresh result. */
+    @Generated(hash = 123334998)
+    public synchronized void resetMatchesAsRedTeam() {
+        matchesAsRedTeam = null;
+    }
+
+    /**
+     * To-many relationship, resolved on first access (and after reset).
+     * Changes to to-many relations are not persisted, make changes to the target entity.
+     */
+    @Generated(hash = 1380948737)
+    public List<Match> getMatchesAsBlueTeam() {
+        if (matchesAsBlueTeam == null) {
+            final DaoSession daoSession = this.daoSession;
+            if (daoSession == null) {
+                throw new DaoException("Entity is detached from DAO context");
+            }
+            MatchDao targetDao = daoSession.getMatchDao();
+            List<Match> matchesAsBlueTeamNew = targetDao._queryTeam_MatchesAsBlueTeam(id);
+            synchronized (this) {
+                if (matchesAsBlueTeam == null) {
+                    matchesAsBlueTeam = matchesAsBlueTeamNew;
+                }
+            }
+        }
+        return matchesAsBlueTeam;
+    }
+
+    /** Resets a to-many relationship, making the next get call to query for a fresh result. */
+    @Generated(hash = 2137446776)
+    public synchronized void resetMatchesAsBlueTeam() {
+        matchesAsBlueTeam = null;
     }
 
     /** called by internal mechanisms, do not call yourself. */
