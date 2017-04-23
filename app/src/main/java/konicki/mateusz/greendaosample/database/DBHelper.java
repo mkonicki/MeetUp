@@ -1,4 +1,4 @@
-package konicki.mateusz.greendaosample;
+package konicki.mateusz.greendaosample.database;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
@@ -32,6 +32,7 @@ public class DBHelper extends DatabaseOpenHelper implements IDBHelper {
         DaoMaster.createAllTables(daoMaster.getDatabase(), true);
     }
 
+    @Override
     public DaoSession getSession(){
         DaoMaster master = new DaoMaster(this.getWritableDb());
         return master.newSession();
