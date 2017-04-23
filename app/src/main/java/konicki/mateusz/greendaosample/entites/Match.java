@@ -22,9 +22,9 @@ public class Match {
 
     private Date end;
 
-    private int redGoals;
+    public int redGoals;
 
-    private int blueGoals;
+    public int blueGoals;
 
     private Long redTeamId;
 
