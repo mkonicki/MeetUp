@@ -18,8 +18,8 @@ public class MatchTest extends BaseTest {
     @Test
     public void matchUpdateWhenEntityIsActive() {
         DaoSession session = master.newSession();
+
         final int blueGoals = 4;
-        final int redGoals = 3;
 
         Team teamA = new Team();
         Team teamB = new Team();
@@ -34,16 +34,13 @@ public class MatchTest extends BaseTest {
         for (int i = 0; i < blueGoals; i++)
             match.blueTeamGoal();
 
-        for (int i = 0; i < redGoals; i++)
-            match.redTeamGoal();
-
+        //ACTIVE UPDATE
         match.update();
 
         session.clear();
 
         Match matchFromDB = master.newSession().getMatchDao().load(match.getId());
 
-        assertThat(matchFromDB.getRedGoals()).isEqualTo(redGoals);
         assertThat(matchFromDB.getBlueGoals()).isEqualTo(blueGoals);
     }
 
@@ -51,31 +48,27 @@ public class MatchTest extends BaseTest {
     public void matchUpdateWhenEntityIsPasive() {
         DaoSession session = master.newSession();
         final int blueGoals = 4;
-        final int redGoals = 3;
 
-        Team teamA = new Team();
-        Team teamB = new Team();
+        Team blueTeam = new Team();
+        Team redTeam = new Team();
 
-        session.insert(teamA);
-        session.insert(teamB);
+        session.insert(blueTeam);
+        session.insert(redTeam);
 
-        Match match = new Match(MatchType.OneVsOne, teamA, teamB);
+        Match match = new Match(MatchType.OneVsOne, blueTeam, redTeam);
 
         assertThat(session.insert(match)).isNotNull();
-        
+
         for (int i = 0; i < blueGoals; i++)
             match.blueTeamGoal();
 
-        for (int i = 0; i < redGoals; i++)
-            match.redTeamGoal();
-
+        //PASSIVE UPDATE
         session.getMatchDao().update(match);
 
         session.clear();
 
         Match matchFromDB = master.newSession().getMatchDao().load(match.getId());
 
-        assertThat(matchFromDB.getRedGoals()).isEqualTo(redGoals);
         assertThat(matchFromDB.getBlueGoals()).isEqualTo(blueGoals);
     }
 
