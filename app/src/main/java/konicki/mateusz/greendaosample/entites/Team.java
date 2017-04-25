@@ -1,30 +1,34 @@
 package konicki.mateusz.greendaosample.entites;
 
-import com.j256.ormlite.dao.ForeignCollection;
-import com.j256.ormlite.field.DatabaseField;
-import com.j256.ormlite.table.DatabaseTable;
+
+import com.orm.SugarRecord;
+
+import java.util.List;
 
 /**
  * Created by Mateusz on 23.04.2017.
  */
-@DatabaseTable
-public class Team {
+public class Team extends SugarRecord<Team> {
 
-    @DatabaseField(generatedId = true)
     private Long id;
-
-    private ForeignCollection<PlayerTeam> players;
-
-    private ForeignCollection<Match> matchesAsRedTeam;
-
-
-    private ForeignCollection<Match> matchesAsBlueTeam;
 
     public Team(Long id) {
         this.id = id;
     }
 
     public Team() {
+    }
+
+    public List<PlayerTeam> getPlayerTeam() {
+        return PlayerTeam.find(PlayerTeam.class, "team = ?", String.valueOf(getId()));
+    }
+
+    public List<PlayerTeam> getRedTeam() {
+        return PlayerTeam.find(PlayerTeam.class, "redTeam = ?", String.valueOf(getId()));
+    }
+
+    public List<PlayerTeam> getBlueTeam() {
+        return PlayerTeam.find(PlayerTeam.class, "blueTeam = ?", String.valueOf(getId()));
     }
 
     public Long getId() {

@@ -1,34 +1,25 @@
 package konicki.mateusz.greendaosample.entites;
 
-import com.j256.ormlite.dao.ForeignCollection;
-import com.j256.ormlite.field.DatabaseField;
-import com.j256.ormlite.table.DatabaseTable;
+import com.orm.SugarRecord;
+
+import java.util.List;
 
 /**
  * Created by Mateusz on 17.04.2017.
  */
-@DatabaseTable
-public class Player {
+public class Player extends SugarRecord<Player> {
 
-    @DatabaseField(generatedId = true)
     private long id;
 
-    @DatabaseField(unique = true)
     private String nickname;
 
-     private ForeignCollection<PlayerTeam> team;
-
     public Player(String nickname) {
+        super();
         this.nickname = nickname;
     }
 
     public Player() {
     }
-
-    public Long getId() {
-        return this.id;
-    }
-
     public void setId(Long id) {
         this.id = id;
     }
@@ -41,6 +32,9 @@ public class Player {
         this.nickname = nickname;
     }
 
+    public List<PlayerTeam> getPlayerTeam() {
+        return  PlayerTeam.find(PlayerTeam.class, "player = ?", String.valueOf(getId()));
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -49,8 +43,7 @@ public class Player {
 
         Player player = (Player) o;
 
-        if (id!=player.id) return false;
-        return nickname != null ? nickname.equals(player.nickname) : player.nickname == null;
+        return id == player.id && (nickname != null ? nickname.equals(player.nickname) : player.nickname == null);
 
     }
 

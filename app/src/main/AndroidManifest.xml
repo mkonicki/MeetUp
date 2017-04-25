@@ -4,7 +4,6 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true" >
         <activity
@@ -18,6 +17,10 @@
             </intent-filter>
         </activity>
 
+        <meta-data android:name="DATABASE" android:value="meetup" />
+        <meta-data android:name="VERSION" android:value="1" />
+        <meta-data android:name="QUERY_LOG" android:value="true" />
+        <meta-data android:name="DOMAIN_PACKAGE_NAME" android:value="konicki.mateusz.greendaosample" />
     </application>
 
 </manifest>
