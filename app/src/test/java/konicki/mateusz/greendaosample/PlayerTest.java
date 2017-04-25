@@ -1,22 +1,18 @@
 package konicki.mateusz.greendaosample;
 
-import android.content.Context;
 import android.os.Build;
 
-import org.greenrobot.greendao.query.QueryBuilder;
+import com.j256.ormlite.dao.Dao;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
+import java.sql.SQLException;
 import java.util.List;
 
-import konicki.mateusz.greendaosample.database.DBHelper;
-import konicki.mateusz.greendaosample.entites.DaoMaster;
-import konicki.mateusz.greendaosample.entites.DaoSession;
 import konicki.mateusz.greendaosample.entites.Player;
-import konicki.mateusz.greendaosample.entites.PlayerDao;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -29,49 +25,54 @@ public class PlayerTest extends BaseTest {
 
     @Test
     public void insertPlayerTest() {
-        DaoSession session = master.newSession();
+        Dao<Player, Long> dao;
+        try {
+            dao = dbHelper.getDao(Player.class);
 
-        Player player = new Player("Kaczka");
+            Player player = new Player("Kaczka");
 
-        Long id = session.insert(player);
+            int id = dao.create(player);
 
-        assertThat(id).isNotNull();
+            assertThat(id).isNotNull();
 
-        PlayerDao playerDao = session.getPlayerDao();
+            List<Player> players = dao.queryForAll();
 
-        List<Player> players = playerDao.loadAll();
-
-        assertThat(players).containsOnlyOnce(player);
-
+            assertThat(players).containsOnlyOnce(player);
+        } catch (SQLException e) {
+            assertThat((Object) e).isNull();
+        }
     }
 
 
     @Test
     public void findPlayerByName() {
 
-        DaoSession session = master.newSession();
+        Dao<Player, Long> dao;
+        try {
+            dao = dbHelper.getDao(Player.class);
 
-        String playerName = "Kaczka";
-        Player player = new Player(playerName);
-        Player secondPlayer = new Player("Kurczak");
-        Player thirdPlayer = new Player("Joey");
-        Player fourthPlayer = new Player("Chandler");
+            String playerName = "Kaczka";
+            Player player = new Player(playerName);
+            Player secondPlayer = new Player("Kurczak");
+            Player thirdPlayer = new Player("Joey");
+            Player fourthPlayer = new Player("Chandler");
 
-        PlayerDao playerDao = session.getPlayerDao();
-
-        //SEED DATA
-        playerDao.insert(player);
-        playerDao.insert(secondPlayer);
-        playerDao.insert(thirdPlayer);
-        playerDao.insert(fourthPlayer);
+            //SEED DATA
+            dao.create(player);
+            dao.create(secondPlayer);
+            dao.create(thirdPlayer);
+            dao.create(fourthPlayer);
 
 
-        QueryBuilder queryBuilder = playerDao.queryBuilder()
-                .where(PlayerDao.Properties.Nickname.like(playerName));
+            List<Player> players = dao.queryBuilder()
+                    .where().eq("nickname", playerName).query();
 
-        assertThat(queryBuilder.count()).isEqualTo(1);
+            assertThat(players.size()).isEqualTo(1);
 
-        assertThat(queryBuilder.list()).containsOnly(player);
+            assertThat(players).containsOnly(player);
+        } catch (SQLException e) {
+            assertThat((Object) e).isNull();
+        }
     }
 
 

@@ -9,7 +9,6 @@ import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
 import konicki.mateusz.greendaosample.database.DBHelper;
-import konicki.mateusz.greendaosample.entites.DaoMaster;
 
 /**
  * Created by Mateusz on 23.04.2017.
@@ -18,11 +17,10 @@ import konicki.mateusz.greendaosample.entites.DaoMaster;
 @Config(manifest = "src/main/AndroidManifest.xml", sdk = Build.VERSION_CODES.LOLLIPOP)
 public class BaseTest {
 
-    protected DaoMaster master;
+    protected DBHelper dbHelper;
 
     public BaseTest() {
         Context context = Robolectric.setupActivity(TestActivity.class);
-        DBHelper dbHelper = new DBHelper(context);
-        this.master = new DaoMaster(dbHelper.getWritableDb());
+        this.dbHelper = new DBHelper(context);
     }
 }

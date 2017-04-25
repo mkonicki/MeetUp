@@ -1,15 +1,14 @@
 package konicki.mateusz.greendaosample;
 
-import org.greenrobot.greendao.query.Query;
-import org.greenrobot.greendao.query.QueryBuilder;
-import org.greenrobot.greendao.rx.RxQuery;
+import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.stmt.QueryBuilder;
+
 import org.junit.Test;
 
+import java.sql.SQLException;
 import java.util.List;
 
-import konicki.mateusz.greendaosample.entites.DaoSession;
 import konicki.mateusz.greendaosample.entites.Match;
-import konicki.mateusz.greendaosample.entites.MatchDao;
 import konicki.mateusz.greendaosample.entites.MatchType;
 import konicki.mateusz.greendaosample.entites.Team;
 
@@ -24,158 +23,148 @@ public class MatchTest extends BaseTest {
 
     @Test
     public void matchTypeTest() {
-        DaoSession session = master.newSession();
+        Dao<Match, Long> dao;
+        try {
+            dao = dbHelper.getDao(Match.class);
 
-        Match match = new Match(MatchType.OneVsOne);
+            Match match = new Match(MatchType.OneVsOne);
 
-        assertThat(session.insert(match)).isNotNull();
+            assertThat(dao.create(match)).isNotNull();
 
-        session.clear();
+            dao.clearObjectCache();
 
-        Match matchFromDB = master.newSession().getMatchDao().load(match.getId());
+            Match matchFromDB = dao.queryForId(match.getId());
 
-        assertThat(matchFromDB.getMatchType()).isEqualTo(MatchType.OneVsOne);
+            assertThat(matchFromDB.getMatchType()).isEqualTo(MatchType.OneVsOne);
+        } catch (SQLException e) {
+            assertThat((Object) e).isNull();
+        }
     }
 
     @Test
     public void matchTypeSearchQueryTest() {
-        DaoSession session = master.newSession();
+        Dao<Match, Long> dao;
+        try {
+            dao = dbHelper.getDao(Match.class);
 
-        Match match = new Match(MatchType.OneVsOne);
-        assertThat(session.insert(match)).isNotNull();
+            Match match = new Match(MatchType.OneVsOne);
+            assertThat(dao.create(match)).isNotNull();
 
-        Match match2 = new Match(MatchType.OneVsTwo);
-        assertThat(session.insert(match2)).isNotNull();
+            Match match2 = new Match(MatchType.OneVsTwo);
+            assertThat(dao.create(match2)).isNotNull();
 
-        Match match3 = new Match(MatchType.TwoVsTwo);
-        assertThat(session.insert(match3)).isNotNull();
+            Match match3 = new Match(MatchType.TwoVsTwo);
+            assertThat(dao.create(match3)).isNotNull();
 
-        Match match4 = new Match(MatchType.OneVsOne);
-        assertThat(session.insert(match4)).isNotNull();
+            Match match4 = new Match(MatchType.OneVsOne);
+            assertThat(dao.create(match4)).isNotNull();
 
-        session.clear();
+            dao.clearObjectCache();
 
-        DaoSession querySession = master.newSession();
+            Dao<Match, Long> querySession = dbHelper.getDao(Match.class);
 
-        QueryBuilder queryBuilder = querySession.getMatchDao().queryBuilder();
+            QueryBuilder queryBuilder = querySession.queryBuilder();
 
-        queryBuilder.where(MatchDao.Properties.MatchType.eq(MatchType.OneVsOne.getId()));
+            queryBuilder.where().eq("matchType", MatchType.OneVsOne);
 
-        assertThat(queryBuilder.count()).isEqualTo(2);
+            assertThat(queryBuilder.countOf()).isEqualTo(2);
+        } catch (SQLException e) {
+            assertThat((Object) e).isNull();
+        }
     }
 
     @Test
     public void matchCombinedQueryTest() {
-        DaoSession session = master.newSession();
+        Dao<Match, Long> dao;
+        try {
+            dao = dbHelper.getDao(Match.class);
 
-        Match match = new Match(MatchType.OneVsOne, 10, 7);
-        assertThat(session.insert(match)).isNotNull();
+            Match match = new Match(MatchType.OneVsOne, 10, 7);
+            assertThat(dao.create(match)).isNotNull();
 
-        Match match2 = new Match(MatchType.OneVsTwo, 10, 5);
-        assertThat(session.insert(match2)).isNotNull();
+            Match match2 = new Match(MatchType.OneVsTwo, 10, 5);
+            assertThat(dao.create(match2)).isNotNull();
 
-        Match match3 = new Match(MatchType.OneVsOne, 10, 9);
-        assertThat(session.insert(match3)).isNotNull();
+            Match match3 = new Match(MatchType.OneVsOne, 10, 9);
+            assertThat(dao.create(match3)).isNotNull();
 
-        Match match4 = new Match(MatchType.OneVsOne, 4, 10);
-        assertThat(session.insert(match4)).isNotNull();
+            Match match4 = new Match(MatchType.OneVsOne, 4, 10);
+            assertThat(dao.create(match4)).isNotNull();
 
-        session.clear();
+            dao.clearObjectCache();
 
-        DaoSession querySession = master.newSession();
+            Dao<Match, Long> querySession = dbHelper.getDao(Match.class);
 
-        QueryBuilder queryBuilder = querySession.getMatchDao().queryBuilder();
+            QueryBuilder queryBuilder = querySession.queryBuilder();
 
-        Query query = queryBuilder.where(
-                MatchDao.Properties.MatchType.eq(MatchType.OneVsOne.getId())
-                , MatchDao.Properties.RedGoals.eq(10))
-                .orderDesc(MatchDao.Properties.BlueGoals).build();
+            queryBuilder.where().eq("matchType", MatchType.OneVsOne).and().eq("redGoals", 10);
+            queryBuilder.orderBy("blueGoals", false);
 
-        List<Match> matches = query.list();
+            List<Match> matches = queryBuilder.query();
 
-        assertThat(matches.size()).isEqualTo(2);
-        assertThat(matches.get(0).getBlueGoals())
-                .isGreaterThan(matches.get(1).getBlueGoals());
-
-        query.setParameter(0, MatchType.OneVsTwo.getId());
-
-        assertThat(query.list().size()).isEqualTo(1);
+            assertThat(matches.size()).isEqualTo(2);
+            assertThat(matches.get(0).getBlueGoals())
+                    .isGreaterThan(matches.get(1).getBlueGoals());
+        } catch (SQLException e) {
+            assertThat((Object) e).isNull();
+        }
     }
 
 
     @Test
     public void matchUpdateWhenEntityIsActive() {
-        DaoSession session = master.newSession();
+        Dao<Team, Long> teamDao;
+        Dao<Match, Long> matchDao;
+        try {
+            teamDao = dbHelper.getDao(Team.class);
+            matchDao = dbHelper.getDao(Match.class);
+            final int blueGoals = 4;
 
-        final int blueGoals = 4;
+            Team teamA = new Team();
+            Team teamB = new Team();
 
-        Team teamA = new Team();
-        Team teamB = new Team();
+            teamDao.create(teamA);
+            teamDao.create(teamB);
 
-        session.insert(teamA);
-        session.insert(teamB);
+            Match match = new Match(MatchType.OneVsOne, teamA, teamB);
 
-        Match match = new Match(MatchType.OneVsOne, teamA, teamB);
+            assertThat(matchDao.create(match)).isNotNull();
 
-        assertThat(session.insert(match)).isNotNull();
+            for (int i = 0; i < blueGoals; i++)
+                match.blueGoals++;
 
-        for (int i = 0; i < blueGoals; i++)
-            match.blueGoals++;
+            matchDao.update(match);
 
-        //ACTIVE UPDATE
-        match.update();
+            matchDao.clearObjectCache();
+            teamDao.clearObjectCache();
 
-        session.clear();
+            Match matchFromDB = matchDao.queryForId(match.getId());
 
-        Match matchFromDB = master.newSession().getMatchDao().load(match.getId());
-
-        assertThat(matchFromDB.getBlueGoals()).isEqualTo(blueGoals);
-    }
-
-    @Test
-    public void matchUpdateWhenEntityIsPassive() {
-        DaoSession session = master.newSession();
-        final int blueGoals = 4;
-
-        Team blueTeam = new Team();
-        Team redTeam = new Team();
-
-        session.insert(blueTeam);
-        session.insert(redTeam);
-
-        Match match = new Match(MatchType.OneVsOne, blueTeam, redTeam);
-
-        assertThat(session.insert(match)).isNotNull();
-
-        for (int i = 0; i < blueGoals; i++)
-            match.blueGoals++;
-
-        //PASSIVE UPDATE
-        session.getMatchDao().update(match);
-
-        session.clear();
-
-        Match matchFromDB = master.newSession().getMatchDao().load(match.getId());
-
-        assertThat(matchFromDB.getBlueGoals()).isEqualTo(blueGoals);
+            assertThat(matchFromDB.getBlueGoals()).isEqualTo(blueGoals);
+        } catch (SQLException e) {
+            assertThat((Object) e).isNull();
+        }
     }
 
     @Test
     public void matchRemoveWhenActive() {
-        DaoSession session = master.newSession();
+        Dao<Match, Long> matchDao;
+        try {
+            matchDao = dbHelper.getDao(Match.class);
+            Match match = new Match(MatchType.OneVsOne);
 
-        Match match = new Match(MatchType.OneVsOne);
+            assertThat(matchDao.create(match)).isNotNull();
 
-        assertThat(session.insert(match)).isNotNull();
+            matchDao.delete(match);
 
-        //ACTIVE DELETE
-        match.delete();
+            matchDao.clearObjectCache();
 
-        session.clear();
+            Match matchFromDB = matchDao.queryForId(match.getId());
 
-        Match matchFromDB = master.newSession().getMatchDao().load(match.getId());
-
-        assertThat(matchFromDB).isNull();
+            assertThat(matchFromDB).isNull();
+        } catch (SQLException e) {
+            assertThat((Object) e).isNull();
+        }
     }
 
 }
