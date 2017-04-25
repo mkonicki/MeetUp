@@ -1,10 +1,10 @@
 package konicki.mateusz.greendaosample.entites;
 
+import org.greenrobot.greendao.DaoException;
 import org.greenrobot.greendao.annotation.Entity;
+import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.ToOne;
-import org.greenrobot.greendao.annotation.Generated;
-import org.greenrobot.greendao.DaoException;
 
 /**
  * Created by Mateusz on 23.04.2017.
@@ -41,6 +41,10 @@ public class PlayerTeam {
 
     @Generated(hash = 317941793)
     public PlayerTeam() {
+    }
+
+    public PlayerTeam(Long playerId, Long teamId) {
+        this(null, playerId, teamId);
     }
 
     public Long getId() {

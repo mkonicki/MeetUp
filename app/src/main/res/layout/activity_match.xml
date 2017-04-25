@@ -1,0 +1,60 @@
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="match"
+            type="konicki.mateusz.greendaosample.match.MatchObservable" />
+    </data>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/green"
+        tools:context="konicki.mateusz.greendaosample.match.MatchActivity">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fitsSystemWindows="true">
+
+            <Button
+                android:id="@+id/blue_team_gol"
+                android:layout_width="400dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:layout_margin="10dp"
+                android:background="@color/blue"
+                android:rotation="180"
+                android:onClick="@{match.onBlueTeamGoal}"
+                android:text="GOAL"
+                android:textColor="@android:color/white" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:rotation="-90"
+                android:text="@{match.getScore}"
+                android:textColor="@android:color/white"
+                android:textSize="120dp" />
+
+            <Button
+                android:id="@+id/red_team_gol"
+                android:layout_width="400dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:layout_margin="10dp"
+                android:background="@android:color/holo_red_dark"
+                android:onClick="@{match.onRedTeamGoal}"
+                android:text="GOAL"
+                android:textColor="@android:color/white" />
+
+
+        </RelativeLayout>
+
+    </FrameLayout>
+</layout>

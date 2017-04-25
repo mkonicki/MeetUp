@@ -1,14 +1,14 @@
 package konicki.mateusz.greendaosample.entites;
 
+import org.greenrobot.greendao.DaoException;
 import org.greenrobot.greendao.annotation.Convert;
 import org.greenrobot.greendao.annotation.Entity;
+import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
+import org.greenrobot.greendao.annotation.ToOne;
 
 import java.util.Date;
-
-import org.greenrobot.greendao.annotation.Generated;
-import org.greenrobot.greendao.DaoException;
-import org.greenrobot.greendao.annotation.ToOne;
+import java.util.Locale;
 
 /**
  * Created by Mateusz on 17.04.2017.
@@ -82,6 +82,14 @@ public class Match {
         this.redTeamId = redTeamId;
         this.blueTeamId = blueTeamId;
         this.matchType = matchType;
+    }
+
+
+    public Match(int redGoals, int blueGoals, Team redTeam, Team blueTeam) {
+        this.redGoals = redGoals;
+        this.blueGoals = blueGoals;
+        this.redTeamId = redTeam.getId();
+        this.blueTeamId = blueTeam.getId();
     }
 
     public Match(MatchType matchType, Team blueTeam, Team redTeam) {
@@ -259,12 +267,8 @@ public class Match {
         }
     }
 
-    public void redTeamGoal() {
-        redGoals++;
-    }
-
-    public void blueTeamGoal() {
-        blueGoals++;
+    public String getScore() {
+        return String.format(Locale.getDefault(), "%s - %s", redGoals, blueGoals);
     }
 
     /** called by internal mechanisms, do not call yourself. */
