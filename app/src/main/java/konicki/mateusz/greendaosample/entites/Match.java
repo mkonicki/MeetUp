@@ -1,6 +1,5 @@
 package konicki.mateusz.greendaosample.entites;
 
-import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
@@ -22,10 +21,6 @@ public class Match {
     public int redGoals;
     @DatabaseField
     public int blueGoals;
-    @DatabaseField
-    private Long redTeamId;
-    @DatabaseField
-    private Long blueTeamId;
 
     @DatabaseField (foreign = true, foreignAutoRefresh = true)
     private Team redTeam;
@@ -52,8 +47,8 @@ public class Match {
 
     public Match(MatchType matchType, Team blueTeam, Team redTeam) {
         this.matchType = matchType;
-        this.blueTeamId = blueTeam.getId();
-        this.redTeamId = redTeam.getId();
+        this.blueTeam = blueTeam;
+        this.redTeam = redTeam;
         this.redGoals = 0;
         this.blueGoals = 0;
     }
@@ -104,22 +99,6 @@ public class Match {
 
     public void setBlueGoals(int blueGoals) {
         this.blueGoals = blueGoals;
-    }
-
-    public Long getRedTeamId() {
-        return this.redTeamId;
-    }
-
-    public void setRedTeamId(Long redTeamId) {
-        this.redTeamId = redTeamId;
-    }
-
-    public Long getBlueTeamId() {
-        return this.blueTeamId;
-    }
-
-    public void setBlueTeamId(Long blueTeamId) {
-        this.blueTeamId = blueTeamId;
     }
 
 }
