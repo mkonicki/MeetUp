@@ -3,10 +3,10 @@ Example of usage and comparision android ORM libraries
 In tests are presented CRUD operation with usage GreenDAO and ORMLite library.
 Sample application to manage table football matches with usage greendao library - [GreenDao](http://greenrobot.org/greendao/)
 
-##Presentation##
+## Presentation ##
 Slides - PL: (https://github.com/mkonicki/MeetUp/blob/master/GREENDAO.pptx)
 
-#Libraries#
+# Libraries #
 - [GreenDao](http://greenrobot.org/greendao/)
 - [ORMLite](http://ormlite.com/sqlite_java_android_orm.shtml)
 - [SugarORM](http://satyan.github.io/sugar/)
