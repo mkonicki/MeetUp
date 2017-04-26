@@ -23,12 +23,14 @@ public class Team extends SugarRecord<Team> {
         return PlayerTeam.find(PlayerTeam.class, "team = ?", String.valueOf(getId()));
     }
 
-    public List<PlayerTeam> getRedTeam() {
-        return PlayerTeam.find(PlayerTeam.class, "redTeam = ?", String.valueOf(getId()));
+    public List<Match> getMatchesAsRedTeam() {
+        return Match.find(Match.class
+                , "redTeam = ?", String.valueOf(getId()));
     }
 
-    public List<PlayerTeam> getBlueTeam() {
-        return PlayerTeam.find(PlayerTeam.class, "blueTeam = ?", String.valueOf(getId()));
+    public List<Match> getMatchesAsBlueTeam() {
+        return Match.find(Match.class
+                , "blueTeam = ?", String.valueOf(getId()));
     }
 
     public Long getId() {
