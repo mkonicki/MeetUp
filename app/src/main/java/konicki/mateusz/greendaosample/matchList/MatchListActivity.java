@@ -9,6 +9,7 @@ import android.widget.ListView;
 import konicki.mateusz.greendaosample.R;
 import konicki.mateusz.greendaosample.database.DBHelper;
 import konicki.mateusz.greendaosample.match.MatchActivity;
+import konicki.mateusz.greendaosample.player.PlayerDialog;
 
 public class MatchListActivity extends AppCompatActivity {
 
@@ -18,8 +19,10 @@ public class MatchListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_match_history);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        findViewById(R.id.match).setOnClickListener(
+         findViewById(R.id.match).setOnClickListener(
                 v -> startActivity(new Intent(this, MatchActivity.class)));
+        findViewById(R.id.player).setOnClickListener(
+                v -> new PlayerDialog().show(this.getFragmentManager(), "Dodaj nowego gracza"));
 
         ((ListView) findViewById(R.id.match_history)).setAdapter(
                 new MatchListAdapter(
