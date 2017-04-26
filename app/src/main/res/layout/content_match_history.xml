@@ -10,7 +10,7 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="konicki.mateusz.greendaosample.matchList.MatchListActivity"
+    tools:context=".components.matchList.MatchListActivity"
     tools:showIn="@layout/activity_match_history">
 
     <ListView
@@ -49,6 +49,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@mipmap/teams"
+            android:id="@+id/team"
             app:fab_label="Dodaj Zespół" />
 
     </com.github.clans.fab.FloatingActionMenu>

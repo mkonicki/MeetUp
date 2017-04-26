@@ -5,7 +5,7 @@
 
         <variable
             name="matchItem"
-            type="konicki.mateusz.greendaosample.matchList.MatchItemObservable" />
+            type="konicki.mateusz.greendaosample.components.matchList.MatchItemObservable" />
     </data>
 
     <LinearLayout
@@ -14,15 +14,17 @@
         android:orientation="vertical">
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="30dp"
-            android:text="@{matchItem.getPlayers}" />
+            android:gravity="center"
+            android:text="@{matchItem.getScore}"
+            android:textSize="25sp" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@{matchItem.getScore}" />
+            android:text="@{matchItem.getPlayers}" />
+
 
     </LinearLayout>
 </layout>

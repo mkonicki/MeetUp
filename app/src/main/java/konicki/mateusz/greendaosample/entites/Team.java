@@ -1,14 +1,14 @@
 package konicki.mateusz.greendaosample.entites;
 
+import org.greenrobot.greendao.DaoException;
 import org.greenrobot.greendao.annotation.Entity;
+import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.JoinEntity;
 import org.greenrobot.greendao.annotation.ToMany;
 
 import java.util.List;
-
-import org.greenrobot.greendao.annotation.Generated;
-import org.greenrobot.greendao.DaoException;
+import java.util.Locale;
 
 /**
  * Created by Mateusz on 23.04.2017.
@@ -154,7 +154,9 @@ public class Team {
         return matchesAsRedTeam;
     }
 
-    /** Resets a to-many relationship, making the next get call to query for a fresh result. */
+    /**
+     * Resets a to-many relationship, making the next get call to query for a fresh result.
+     */
     @Generated(hash = 123334998)
     public synchronized void resetMatchesAsRedTeam() {
         matchesAsRedTeam = null;
@@ -182,10 +184,21 @@ public class Team {
         return matchesAsBlueTeam;
     }
 
-    /** Resets a to-many relationship, making the next get call to query for a fresh result. */
+    /**
+     * Resets a to-many relationship, making the next get call to query for a fresh result.
+     */
     @Generated(hash = 2137446776)
     public synchronized void resetMatchesAsBlueTeam() {
         matchesAsBlueTeam = null;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder(String.valueOf(getId()));
+        for (Player player : getPlayers()) {
+            builder.append(String.format(Locale.getDefault(), " %s ", player.getNickname()));
+        }
+        return builder.toString();
     }
 
     /** called by internal mechanisms, do not call yourself. */

@@ -1,4 +1,4 @@
-package konicki.mateusz.greendaosample.match;
+package konicki.mateusz.greendaosample.components.match;
 
 import android.content.Context;
 import android.content.Intent;
@@ -7,9 +7,8 @@ import android.databinding.Bindable;
 import android.support.v7.app.AlertDialog;
 import android.view.View;
 
-import konicki.mateusz.greendaosample.database.DBHelper;
+import konicki.mateusz.greendaosample.components.matchList.MatchListActivity;
 import konicki.mateusz.greendaosample.entites.Match;
-import konicki.mateusz.greendaosample.matchList.MatchListActivity;
 
 /**
  * Created by Mateusz on 25.04.2017.
@@ -20,7 +19,6 @@ public class MatchObservable extends BaseObservable {
     private Context context;
 
     public MatchObservable(Match match, Context context) {
-        new DBHelper(context).getSession().insert(match);
         this.match = match;
         this.context = context;
     }

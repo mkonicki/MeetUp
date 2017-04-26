@@ -1,4 +1,4 @@
-package konicki.mateusz.greendaosample.match;
+package konicki.mateusz.greendaosample.components.match;
 
 import android.databinding.DataBindingUtil;
 import android.databinding.ViewDataBinding;
@@ -10,6 +10,7 @@ import android.view.WindowManager;
 
 import konicki.mateusz.greendaosample.BR;
 import konicki.mateusz.greendaosample.R;
+import konicki.mateusz.greendaosample.database.DBHelper;
 import konicki.mateusz.greendaosample.entites.Match;
 
 /**
@@ -17,14 +18,20 @@ import konicki.mateusz.greendaosample.entites.Match;
  * status bar and navigation/system bar) with user interaction.
  */
 public class MatchActivity extends AppCompatActivity {
+    private final String MATCH_ID = "MATCH_ID";
 
     MatchObservable match;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        match = new MatchObservable(new Match(), this);
+        match = new MatchObservable(getMatchFromExtras(), this);
         initView(R.layout.activity_match);
+    }
+
+    private Match getMatchFromExtras() {
+        Long id = getIntent().getLongExtra(MATCH_ID, 0);
+        return new DBHelper(this).getSession().getMatchDao().load(id);
     }
 
     private void initView(int layoutId) {

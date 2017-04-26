@@ -5,14 +5,14 @@
 
         <variable
             name="match"
-            type="konicki.mateusz.greendaosample.match.MatchObservable" />
+            type="konicki.mateusz.greendaosample.components.match.MatchObservable" />
     </data>
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/green"
-        tools:context="konicki.mateusz.greendaosample.match.MatchActivity">
+        tools:context=".components.match.MatchActivity">
 
         <RelativeLayout
             android:layout_width="match_parent"

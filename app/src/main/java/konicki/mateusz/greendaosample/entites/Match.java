@@ -100,6 +100,10 @@ public class Match {
         this.blueGoals = 0;
     }
 
+    public Match(Date date) {
+        begin = date;
+    }
+
     public Long getId() {
         return this.id;
     }
@@ -277,4 +281,6 @@ public class Match {
         this.daoSession = daoSession;
         myDao = daoSession != null ? daoSession.getMatchDao() : null;
     }
+
+
 }

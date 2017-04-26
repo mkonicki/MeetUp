@@ -1,4 +1,4 @@
-package konicki.mateusz.greendaosample.matchList;
+package konicki.mateusz.greendaosample.components.matchList;
 
 import android.databinding.DataBindingUtil;
 import android.databinding.ViewDataBinding;

@@ -8,7 +8,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true">
         <activity
-            android:name=".matchList.MatchListActivity"
+            android:name=".components.matchList.MatchListActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
@@ -19,11 +19,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".MainActivity"
-            android:label="@string/title_activity_match"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".match.MatchActivity"
+            android:name=".components.match.MatchActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_match"
             android:theme="@style/AppTheme.NoActionBar" />

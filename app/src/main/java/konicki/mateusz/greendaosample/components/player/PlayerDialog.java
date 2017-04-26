@@ -1,4 +1,4 @@
-package konicki.mateusz.greendaosample.player;
+package konicki.mateusz.greendaosample.components.player;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
