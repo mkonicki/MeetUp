@@ -2,6 +2,9 @@ package konicki.mateusz.greendaosample;
 
 import android.os.Build;
 
+import com.annimon.stream.Collectors;
+import com.annimon.stream.Stream;
+
 import org.greenrobot.greendao.query.QueryBuilder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,6 +21,7 @@ import konicki.mateusz.greendaosample.entites.PlayerDao;
 import konicki.mateusz.greendaosample.entites.PlayerTeam;
 import konicki.mateusz.greendaosample.entites.PlayerTeamDao;
 import konicki.mateusz.greendaosample.entites.Team;
+import konicki.mateusz.greendaosample.entites.TeamDao;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -76,16 +80,16 @@ public class PlayerTest extends BaseTest {
 
 
     @Test
-    public void findAllMatchesWonByFirstPlayer() {
+    public void getAllWonMatchesForPlayer() {
         DaoSession session = master.newSession();
 
         //1. Seed Players
-        Player firstPlayer = new Player("Kaczka");
+        Player playerToFind = new Player("Kaczka");
         Player secondPlayer = new Player("Kurczak");
         Player thirdPlayer = new Player("Joey");
         Player fourthPlayer = new Player("Chandler");
 
-        assertThat(session.insert(firstPlayer)).isNotNull();
+        assertThat(session.insert(playerToFind)).isNotNull();
         assertThat(session.insert(secondPlayer)).isNotNull();
         assertThat(session.insert(thirdPlayer)).isNotNull();
         assertThat(session.insert(fourthPlayer)).isNotNull();
@@ -106,19 +110,19 @@ public class PlayerTest extends BaseTest {
         assertThat(session.insert(sixthTeam)).isNotNull();
 
         //3. Seed Player membership to teams
-        assertThat(session.insert(new PlayerTeam(firstPlayer.getId(), firstTeam.getId()))).isNotNull();
+        assertThat(session.insert(new PlayerTeam(playerToFind.getId(), firstTeam.getId()))).isNotNull();
         assertThat(session.insert(new PlayerTeam(secondPlayer.getId(), firstTeam.getId()))).isNotNull();
 
         assertThat(session.insert(new PlayerTeam(thirdPlayer.getId(), secondTeam.getId()))).isNotNull();
         assertThat(session.insert(new PlayerTeam(fourthPlayer.getId(), secondTeam.getId()))).isNotNull();
 
-        assertThat(session.insert(new PlayerTeam(firstPlayer.getId(), thirdTeam.getId()))).isNotNull();
+        assertThat(session.insert(new PlayerTeam(playerToFind.getId(), thirdTeam.getId()))).isNotNull();
         assertThat(session.insert(new PlayerTeam(thirdPlayer.getId(), thirdTeam.getId()))).isNotNull();
 
         assertThat(session.insert(new PlayerTeam(secondPlayer.getId(), fourthTeam.getId()))).isNotNull();
         assertThat(session.insert(new PlayerTeam(fourthPlayer.getId(), fourthTeam.getId()))).isNotNull();
 
-        assertThat(session.insert(new PlayerTeam(firstPlayer.getId(), fifthTeam.getId()))).isNotNull();
+        assertThat(session.insert(new PlayerTeam(playerToFind.getId(), fifthTeam.getId()))).isNotNull();
         assertThat(session.insert(new PlayerTeam(fourthPlayer.getId(), fifthTeam.getId()))).isNotNull();
 
         assertThat(session.insert(new PlayerTeam(secondPlayer.getId(), sixthTeam.getId()))).isNotNull();
@@ -132,17 +136,27 @@ public class PlayerTest extends BaseTest {
         assertThat(session.insert(new Match(8, 10, thirdTeam, fourthTeam))).isNotNull();
         assertThat(session.insert(new Match(10, 4, fifthTeam, sixthTeam))).isNotNull();
 
-        //5. Query for all won matches
+        //5. Get all teams where player played
+        List<PlayerTeam> teamsWherePlayedPlayer = session.getPlayerTeamDao().queryBuilder()
+                .where(PlayerTeamDao.Properties.PlayerId.eq(playerToFind.getId())).list();
+        List<Long> teamIds = Stream.of(teamsWherePlayedPlayer)
+                .map(PlayerTeam::getTeamId)
+                .collect(Collectors.toList());
 
-        QueryBuilder queryBuilder = session.getPlayerDao().queryBuilder();
+        //6. Query for all won matches
+        QueryBuilder queryAsRedTeam = session.getMatchDao().queryBuilder();
+        queryAsRedTeam.join(MatchDao.Properties.RedTeamId, Team.class)
+                .where(TeamDao.Properties.Id.in(teamIds));
+        queryAsRedTeam.where(MatchDao.Properties.RedGoals.eq(10));
 
-        queryBuilder.join(PlayerTeam.class, PlayerTeamDao.Properties.PlayerId);
-        queryBuilder.join(Match.class, MatchDao.Properties.BlueTeamId)
-                .where(MatchDao.Properties.RedGoals.eq(10));
+        assertThat(queryAsRedTeam.count()).isEqualTo(3);
 
-        queryBuilder.where(PlayerDao.Properties.Id.eq(firstPlayer.getId()));
+        QueryBuilder queryAsBlueTeam = session.getMatchDao().queryBuilder();
+        queryAsBlueTeam.join(MatchDao.Properties.BlueTeamId, Team.class)
+                .where(TeamDao.Properties.Id.in(teamIds));
+        queryAsBlueTeam.where(MatchDao.Properties.BlueGoals.eq(10));
 
-        assertThat(queryBuilder.count()).isEqualTo(1);
+        assertThat(queryAsBlueTeam.count()).isEqualTo(0);
 
     }
 
