@@ -53,6 +53,13 @@ public class Match {
         this.blueGoals = 0;
     }
 
+    public Match(int redGoals, int blueGoals, Team redTeam, Team blueTeam) {
+        this.redGoals = redGoals;
+        this.blueGoals = blueGoals;
+        this.redTeam = redTeam;
+        this.blueTeam = blueTeam;
+    }
+
     public Long getId() {
         return this.id;
     }

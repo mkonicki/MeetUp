@@ -21,6 +21,11 @@ public class PlayerTeam {
     public PlayerTeam() {
     }
 
+    public PlayerTeam(Player player, Team team) {
+        this.player = player;
+        this.team = team;
+    }
+
     public Long getId() {
         return this.id;
     }
